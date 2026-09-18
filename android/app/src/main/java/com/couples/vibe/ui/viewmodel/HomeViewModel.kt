@@ -227,6 +227,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun dismissNameSetup() {
+        _uiState.update { it.copy(showNameSetup = false) }
+    }
+
     fun dismissToast() {
         _uiState.update { it.copy(toastMessage = null) }
     }

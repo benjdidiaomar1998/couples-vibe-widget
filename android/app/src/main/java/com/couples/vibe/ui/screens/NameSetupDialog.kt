@@ -2,13 +2,18 @@ package com.couples.vibe.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -17,11 +22,19 @@ import com.couples.vibe.ui.theme.Rose500
 @Composable
 fun NameSetupDialog(
     initialName: String = "",
-    onSave: (String) -> Unit
+    onSave: (String) -> Unit,
+    onDismiss: (() -> Unit)? = null
 ) {
     var nameInput by remember { mutableStateOf(initialName) }
+    val focusRequester = remember { FocusRequester() }
 
-    Dialog(onDismissRequest = { /* Must enter a name */ }) {
+    LaunchedEffect(Unit) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Exception) {}
+    }
+
+    Dialog(onDismissRequest = { onDismiss?.invoke() }) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -37,7 +50,7 @@ fun NameSetupDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Welcome ❤️",
+                    text = if (initialName.isEmpty()) "Welcome ❤️" else "Edit Name ✏️",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -58,8 +71,17 @@ fun NameSetupDialog(
                     onValueChange = { if (it.length <= 30) nameInput = it },
                     placeholder = { Text("Enter your name (e.g. Alex)") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     shape = RoundedCornerShape(12.dp),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        val clean = nameInput.trim()
+                        if (clean.isNotEmpty()) {
+                            onSave(clean)
+                        }
+                    }),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Rose500,
                         unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
@@ -91,7 +113,18 @@ fun NameSetupDialog(
                         fontWeight = FontWeight.Bold
                     )
                 }
+
+                if (onDismiss != null && initialName.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Cancel", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+                    }
+                }
             }
         }
     }
 }
+

@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,16 +81,48 @@ fun HomeScreen(
                     )
                 }
 
-                IconButton(
-                    onClick = onNavigateToPairing,
-                    modifier = Modifier.size(36.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Link,
-                        contentDescription = "Pairing",
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.size(20.dp)
-                    )
+                    // Profile / Display Name Button
+                    Surface(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable { onOpenNameSetup?.invoke() },
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = if (myName.isNotBlank()) myName else "Set Name",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = if (myName.isNotBlank()) MaterialTheme.colorScheme.onSurface else Rose500
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Name",
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
+                    }
+
+                    IconButton(
+                        onClick = onNavigateToPairing,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Link,
+                            contentDescription = "Pairing",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
 
@@ -97,7 +130,11 @@ fun HomeScreen(
 
             if (!isPaired) {
                 // Not paired card
-                UnpairedCard(onNavigateToPairing)
+                UnpairedCard(
+                    onNavigateToPairing = onNavigateToPairing,
+                    onOpenNameSetup = onOpenNameSetup,
+                    myName = myName
+                )
             } else {
                 // Paired: Two clean side-by-side columns: ME vs PARTNER
                 Row(
@@ -114,7 +151,8 @@ fun HomeScreen(
                         vibes = myVibes,
                         updatedAt = 0L,
                         isMe = true,
-                        onCardClick = onOpenVibeSelector
+                        onCardClick = onOpenVibeSelector,
+                        onEditNameClick = onOpenNameSetup
                     )
 
                     // Right Column: PARTNER
@@ -125,7 +163,8 @@ fun HomeScreen(
                         vibes = partnerVibes,
                         updatedAt = partnerUpdatedAt,
                         isMe = false,
-                        onCardClick = null
+                        onCardClick = null,
+                        onEditNameClick = null
                     )
                 }
 
@@ -170,7 +209,8 @@ fun VibeColumn(
     vibes: List<String>,
     updatedAt: Long,
     isMe: Boolean,
-    onCardClick: (() -> Unit)?
+    onCardClick: (() -> Unit)?,
+    onEditNameClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier
@@ -193,7 +233,10 @@ fun VibeColumn(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Header: Category Title (ME / PARTNER) and Name
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = if (isMe && onEditNameClick != null) Modifier.clickable { onEditNameClick() } else Modifier
+            ) {
                 Text(
                     text = title,
                     fontSize = 11.sp,
@@ -202,12 +245,25 @@ fun VibeColumn(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 )
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    if (isMe && onEditNameClick != null) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit name",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+                }
             }
 
             // Center: Expressive Emojis & Labels
@@ -269,7 +325,11 @@ fun VibeColumn(
 }
 
 @Composable
-fun UnpairedCard(onNavigateToPairing: () -> Unit) {
+fun UnpairedCard(
+    onNavigateToPairing: () -> Unit,
+    onOpenNameSetup: (() -> Unit)? = null,
+    myName: String = ""
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -298,9 +358,32 @@ fun UnpairedCard(onNavigateToPairing: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (myName.isBlank()) {
+                OutlinedButton(
+                    onClick = { onOpenNameSetup?.invoke() },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Rose500)
+                ) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Set Your Name First")
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+            } else {
+                Text(
+                    text = "You are: $myName",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
             Button(
                 onClick = onNavigateToPairing,
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Rose500)
             ) {
