@@ -1,0 +1,6 @@
+{
+  "name": "Couples Vibe Widget",
+  "description": "Realtime couples mood and vibe sharing app with an interactive Android Glance home-screen widget.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

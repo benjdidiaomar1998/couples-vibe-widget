@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="rose_500">#F43F5E</color>
+    <color name="rose_600">#E11D48</color>
+    <color name="rose_50">#FFF1F2</color>
+    <color name="stone_900">#1C1917</color>
+    <color name="stone_800">#292524</color>
+    <color name="stone_100">#F5F5F4</color>
+    <color name="stone_50">#FAFAF9</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>

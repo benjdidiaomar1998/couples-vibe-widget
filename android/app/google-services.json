@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "912965123089",
+    "firebase_url": "https://couples-vibe-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "couples-vibe",
+    "storage_bucket": "couples-vibe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912965123089:android:4d755a42d72e07d366c5b0",
+        "android_client_info": {
+          "package_name": "com.couples.vibe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF-mhUdL1jTT56Rq_QkMq741-Rs_QoZEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

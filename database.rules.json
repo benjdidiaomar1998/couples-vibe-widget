@@ -1,0 +1,54 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid",
+        "coupleId": {
+          ".write": "auth != null",
+          ".validate": "newData.isString() || newData.val() === null"
+        },
+        "displayName": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.isString() && newData.val().length <= 50"
+        }
+      }
+    },
+    "couples": {
+      "$coupleId": {
+        ".read": "auth != null && data.child('members/' + auth.uid).val() === true",
+        ".write": "auth != null && (!data.exists() || data.child('members/' + auth.uid).val() === true || newData.child('members/' + auth.uid).val() === true)",
+        "members": {
+          "$memberId": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "membersData": {
+          "$memberId": {
+            ".validate": "newData.hasChildren(['uid', 'displayName'])"
+          }
+        },
+        "currentVibes": {
+          ".read": "auth != null && root.child('couples/' + $coupleId + '/members/' + auth.uid).val() === true",
+          "$memberId": {
+            ".write": "auth != null && auth.uid === $memberId && root.child('couples/' + $coupleId + '/members/' + auth.uid).val() === true"
+          }
+        },
+        "moments": {
+          ".read": "auth != null && root.child('couples/' + $coupleId + '/members/' + auth.uid).val() === true",
+          "$momentId": {
+            ".write": "auth != null && newData.child('uid').val() === auth.uid && root.child('couples/' + $coupleId + '/members/' + auth.uid).val() === true"
+          }
+        }
+      }
+    },
+    "pairingCodes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() && newData.child('creatorUid').val() === auth.uid || data.child('creatorUid').val() === auth.uid || (!data.hasChild('usedBy') && newData.child('usedBy').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['creatorUid', 'createdAt', 'expiresAt'])"
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Left Partner Heart (Rose / Coral Neon Gradient) -->
+    <path
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 36,70 C 26,61 16,51 16,40 C 16,31 23,25 32,25 C 37,25 41.5,27.5 44,31.5 C 46.5,27.5 51,25 56,25 C 65,25 72,31 72,40 C 72,51 62,61 52,70 L 44,77 Z">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="16"
+                android:startY="25"
+                android:endX="72"
+                android:endY="77"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FB7185" />
+                <item android:offset="1.0" android:color="#F43F5E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Right Partner Heart (Intertwined Violet / Purple Neon Gradient) -->
+    <path
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 56,70 C 46,61 36,51 36,40 C 36,31 43,25 52,25 C 57,25 61.5,27.5 64,31.5 C 66.5,27.5 71,25 76,25 C 85,25 92,31 92,40 C 92,51 82,61 72,70 L 64,77 Z">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="36"
+                android:startY="25"
+                android:endX="92"
+                android:endY="77"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#C084FC" />
+                <item android:offset="1.0" android:color="#8B5CF6" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Subtle Connection Pulse at Center Intersection -->
+    <path
+        android:fillColor="#E0E7FF"
+        android:pathData="M 54,31 C 54,31 55.5,33.5 58,34 C 55.5,34.5 54,37 54,37 C 54,37 52.5,34.5 50,34 C 52.5,33.5 54,31 54,31 Z" />
+
+    <!-- Sparkle Diamond Accent (Top-Right) -->
+    <path
+        android:fillColor="#FFF1F2"
+        android:pathData="M 78,17 L 79.5,21.5 L 84,23 L 79.5,24.5 L 78,29 L 76.5,24.5 L 72,23 L 76.5,21.5 Z" />
+
+</vector>

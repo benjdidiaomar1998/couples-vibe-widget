@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Couples Vibe</string>
+    <string name="widget_name">Couples Vibe Widget</string>
+    <string name="widget_description">Glance at your partner\'s current mood and vibes on your home screen</string>
+</resources>
