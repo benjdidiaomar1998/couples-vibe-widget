@@ -28,5 +28,12 @@ class CouplesVibeApp : Application() {
         } catch (e: Exception) {
             // Ignore if WorkManager not initialized
         }
+
+        // Start minimal event-driven foreground service for zero-delay closed-app widget updates
+        try {
+            com.couples.vibe.service.VibeForegroundService.startService(this)
+        } catch (e: Exception) {
+            android.util.Log.e("CouplesVibeApp", "Failed to start VibeForegroundService", e)
+        }
     }
 }

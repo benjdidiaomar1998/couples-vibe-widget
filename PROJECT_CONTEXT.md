@@ -23,7 +23,7 @@
 - **Widget State Management**: Jetpack Glance DataStore (`androidx.glance:glance-appwidget-testing`, `androidx.datastore:datastore-preferences:1.1.1`)
 - **Concurrency**: Kotlin Coroutines (`viewModelScope`, IO scope, StateFlow)
 - **Architecture**: MVVM + Repository Pattern
-- **Background Execution**: Lightweight, zero background services. Zero continuous CPU or battery usage.
+- **Background Execution**: Event-driven `VibeForegroundService` (Android 14 `dataSync` type) + `BootReceiver`. Sits dormant on Linux network socket at 0% idle CPU and wakes only upon incoming partner vibe push.
 - **Build System**: Gradle 8.x with Kotlin DSL (`build.gradle.kts`), Android SDK 34 (Target), SDK 26 (Min)
 
 ### Backend & Realtime Infrastructure
@@ -40,10 +40,10 @@
 
 ## 3. Core Architecture & Mechanisms
 
-### A. Zero-Overhead Widget Sync (No Background Services)
-- **Zero Background Processing**: No persistent foreground service or background polling runs when idle, keeping CPU and battery consumption at 0%.
-- **Direct Widget Actions**: Tapping a vibe directly on the widget updates Glance DataStore instantly and dispatches to Firebase.
-- **App-Driven Sync**: When the app is open, Firebase real-time listeners keep the app UI and Glance widget synchronized.
+### A. Zero-Delay Realtime Widget Sync (When App is Closed)
+- **Problem**: When the app is closed, Android kills background processes. Without an active listener, the device cannot receive cloud events.
+- **Solution**: `VibeForegroundService` maintains a persistent, low-overhead WebSocket connection to Firebase Realtime Database at `/couples/{coupleId}/currentVibes`.
+- **0% Idle CPU**: The service sits completely dormant on socket epoll without executing polling, timers, or disk writes. When the partner updates their vibe, Firebase pushes the event, the service updates Glance DataStore, and returns to dormant state.
 
 ### B. In-Widget Direct 1-Tap Action (`SendVibeActionCallback`)
 - Tapping any emoji button on the home screen widget executes `SendVibeActionCallback : ActionCallback`.

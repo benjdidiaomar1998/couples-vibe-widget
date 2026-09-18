@@ -42,6 +42,9 @@ class MainActivity : ComponentActivity() {
         // Handle intent action from widget
         handleIntent(intent)
 
+        // Ensure live widget sync foreground service is running for closed-app updates
+        com.couples.vibe.service.VibeForegroundService.startService(this)
+
         setContent {
             CouplesVibeTheme {
                 val uiState by viewModel.uiState.collectAsState()
